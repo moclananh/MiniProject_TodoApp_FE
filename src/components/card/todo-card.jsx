@@ -9,7 +9,7 @@ const getRandomBackgroundColor = () => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
-export const TodoCard = ({ todo, onEdit, onDelete, onView }) => {
+export const TodoCard = ({ todo, onEdit, onDelete, onView, onStar }) => {
   const { title, description, status, priority, startDate, endDate, star, isActive } = todo;
 
   const PriorityChip = ({ priority }) => {
@@ -56,7 +56,14 @@ export const TodoCard = ({ todo, onEdit, onDelete, onView }) => {
             <Typography variant="h5" fontWeight="bold">
               {title}
             </Typography>
-            <IconButton>{star ? <StarIcon color="primary" /> : <StarBorderIcon />}</IconButton>
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onStar(todo.id);
+              }}
+            >
+              {star ? <StarIcon color="primary" /> : <StarBorderIcon />}
+            </IconButton>
           </Box>
 
           {/* Description */}
