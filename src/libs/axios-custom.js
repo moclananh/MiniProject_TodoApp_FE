@@ -3,7 +3,7 @@ import { loginApi } from "../apis/LoginApi";
 
 // Create an axios instance
 const httpClient = axios.create({
-  baseURL: "http://localhost:5081/api",
+  baseURL: "https://localhost:5001/api",
 });
 
 // Request interceptor to add bearer token

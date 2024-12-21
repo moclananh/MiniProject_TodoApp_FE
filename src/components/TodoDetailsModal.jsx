@@ -116,7 +116,17 @@ const TodoDetailsModal = ({ open, onClose, todoId }) => {
               <Typography variant="body1" color="textSecondary">
                 Description:
               </Typography>
-              <Typography variant="body2">{todo.description}</Typography>
+              <Box
+                sx={{
+                  maxHeight: 250, // Limit the height of the description box
+                  overflowY: "auto",
+                  paddingRight: 1,
+                }}
+              >
+                <Typography variant="body2">
+                  {todo.description}
+                </Typography>
+              </Box>
             </Box>
           )}
         </Box>
