@@ -1,6 +1,4 @@
 import axios from "axios";
-import { loginApi } from "../apis/LoginApi";
-
 // Create an axios instance
 const httpClient = axios.create({
   baseURL: "https://localhost:5001/api",
@@ -34,7 +32,7 @@ httpClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response.status === 401) {
-      window.location.href = "/auth/login";
+      //window.location.href = "/auth/login";
     }
     return Promise.reject(error);
   }

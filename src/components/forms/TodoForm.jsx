@@ -50,15 +50,15 @@ const TodoForm = ({ openDialog, closeDialog, onSuccess, isEdit }) => {
 
   const handleOnSubmit = (data) => {
     TodoApi.createTodo(data).then((response) => {
-      const { success, message } = response.data;
-      if (!success) {
+      const { isSuccess, message } = response.data;
+      console.log(response.data)
+      if (!isSuccess) {
         toast.error(message);
         return;
       }
       toast.success(message);
       onSuccess();
       closeDialog();
-      console.log("User Id after add success: ", id)
       reset({
         title: "",
         description: "",

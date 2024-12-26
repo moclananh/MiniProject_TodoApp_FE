@@ -7,6 +7,7 @@ import { Link } from "react-router";
 import { loginApi } from "../../apis/LoginApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+
 const signupSchema = z
   .object({
     username: z

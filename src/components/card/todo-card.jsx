@@ -1,13 +1,9 @@
-import React from "react";
-import { Box, Card, CardContent, Typography, Chip, IconButton, Button, Stack } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { StyledCard, StyledCardContent, TitleBox, DescriptionTypography, StatusPriorityBox, DateBox, FooterBox } from "./todo-card-styled";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-import { Delete, Edit, Archive } from "@mui/icons-material";
-
-const getRandomBackgroundColor = () => {
-  const colors = ["#FFCDD2", "#C8E6C9", "#BBDEFB", "#FFE082", "#D1C4E9", "#FFAB91", "#B3E5FC"];
-  return colors[Math.floor(Math.random() * colors.length)];
-};
+import { Delete, Edit } from "@mui/icons-material";
+import { Chip, IconButton, Button, Stack, Box, Typography } from "@mui/material";
 
 export const TodoCard = ({ todo, onEdit, onDelete, onView, onStar }) => {
   const { title, description, status, priority, startDate, endDate, star, isActive } = todo;
@@ -18,41 +14,28 @@ export const TodoCard = ({ todo, onEdit, onDelete, onView, onStar }) => {
     return <Chip label={labels[priority]} color={colors[priority]} size="small" />;
   };
 
-  const colorRef = React.useRef(getRandomBackgroundColor());
+  const COLORS = ["#FFCDD2", "#C8E6C9", "#BBDEFB", "#FFE082", "#D1C4E9", "#FFAB91", "#B3E5FC"];
+  const getRandomBackgroundColor = () => {
+    return COLORS[Math.floor(Math.random() * COLORS.length)];
+  };
+
+  const [backgroundColor, setBackgroundColor] = useState("");
+
+  useEffect(() => {
+    // Generate and set the random background color when the component mounts
+    setBackgroundColor(getRandomBackgroundColor());
+  }, []);
 
   const StatusChip = ({ status }) => {
-    return <Chip label={status} color="primary" size="small" />;
+    const statusLabels = ["draft", "todo", "in progress", "done", "bug"];
+    return <Chip label={statusLabels[status]} color="primary" size="small" />;
   };
 
   return (
-    <Card
-      onClick={() => onView(todo.id)}
-      sx={{
-        backgroundColor: colorRef.current,
-        color: "black",
-        borderRadius: 2,
-        cursor: "pointer",
-        boxShadow: 3,
-        overflow: "hidden",
-        height: "100%", // Make card fill the height
-        display: "flex", // Enable flexbox
-        flexDirection: "column", // Stack content vertically
-      }}
-    >
-      <CardContent
-        sx={{
-          flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          height: "100%", // Take full height
-          padding: 2,
-          "&:last-child": { paddingBottom: 2 }, // Override MUI's default padding
-        }}
-      >
+    <StyledCard onClick={() => onView(todo.id)} color={backgroundColor}>
+      <StyledCardContent>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {/* Title and Star Icon */}
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          <TitleBox>
             <Typography variant="h5" fontWeight="bold">
               {title}
             </Typography>
@@ -64,45 +47,27 @@ export const TodoCard = ({ todo, onEdit, onDelete, onView, onStar }) => {
             >
               {star ? <StarIcon color="primary" /> : <StarBorderIcon />}
             </IconButton>
-          </Box>
-
-          {/* Description */}
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-            }}
-          >
+          </TitleBox>
+          <DescriptionTypography variant="body2" color="text.secondary">
             {description}
-          </Typography>
-
-          {/* Status and Priority */}
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          </DescriptionTypography>
+          <StatusPriorityBox>
             <Chip label={isActive ? "Active" : "Inactive"} color={isActive ? "success" : "default"} size="small" />
             <Stack direction="row" gap={1}>
               <PriorityChip priority={priority} />
               <StatusChip status={status} />
             </Stack>
-          </Box>
-
-          {/* Dates */}
-          <Box>
+          </StatusPriorityBox>
+          <DateBox>
             <Typography variant="caption" display="block">
               Start: {new Date(startDate).toLocaleDateString()}
             </Typography>
             <Typography variant="caption" display="block">
               Due: {new Date(endDate).toLocaleDateString()}
             </Typography>
-          </Box>
+          </DateBox>
         </Box>
-
-        {/* Footer: Edit and Delete Buttons */}
-        <Box gap={2} display="flex" alignItems="center" mt={2}>
+        <FooterBox>
           <Button
             variant="contained"
             startIcon={<Edit />}
@@ -126,11 +91,8 @@ export const TodoCard = ({ todo, onEdit, onDelete, onView, onStar }) => {
           >
             Delete
           </Button>
-          <IconButton size="small">
-            <Archive color="inherit" />
-          </IconButton>
-        </Box>
-      </CardContent>
-    </Card>
+        </FooterBox>
+      </StyledCardContent>
+    </StyledCard>
   );
 };

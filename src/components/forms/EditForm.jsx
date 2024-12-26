@@ -1,20 +1,7 @@
 import React, { useEffect } from "react";
-import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Stack,
-} from "@mui/material";
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { TodoApi } from "../../apis/TodoApi";
 import toast from "react-hot-toast";
 import { loginApi } from "../../apis/LoginApi";
@@ -22,7 +9,7 @@ import { formatDate, TodoSchema, todoStatus } from "./TodoForm";
 import { findKey } from "lodash";
 
 const EditTodoForm = ({ openDialog, closeDialog, onSuccess, todoId, isEdit }) => {
-  const { id } = loginApi.getUser();
+  const { id } = loginApi.getUser(); // Get the logged-in user's ID
   const [isLoading, setIsLoading] = React.useState(false);
 
   useEffect(() => {
@@ -30,12 +17,12 @@ const EditTodoForm = ({ openDialog, closeDialog, onSuccess, todoId, isEdit }) =>
       TodoApi.getById(todoId)
         .then((response) => {
           const { data } = response.data;
-          const statusKey = findKey(todoStatus, (val) => val === data.status);
+          const statusKey = findKey(todoStatus, (val) => val === String(data.status)); // Ensure type match
           reset({
             ...data,
             startDate: formatDate(new Date(data.startDate)),
             endDate: formatDate(new Date(data.endDate)),
-            status: Number(statusKey),
+            status: Number(statusKey) || data.status, // Fallback to API's status if mapping fails
           });
         })
         .catch((e) => {
@@ -71,13 +58,13 @@ const EditTodoForm = ({ openDialog, closeDialog, onSuccess, todoId, isEdit }) =>
   const handleOnSubmit = (data) => {
     TodoApi.updateTodo(todoId, data)
       .then((response) => {
-        const { success, message } = response.data;
-        if (!success) {
+        const { isSuccess, message } = response.data;
+        if (!isSuccess) {
           toast.error(message);
           return;
         }
         toast.success(message);
-        onSuccess();
+        onSuccess(); // Callback to refresh Todo list or data
         closeDialog();
       })
       .catch((error) => {
@@ -116,7 +103,7 @@ const EditTodoForm = ({ openDialog, closeDialog, onSuccess, todoId, isEdit }) =>
               name="status"
               control={control}
               render={({ field }) => (
-                <Select disabled={!isEdit} {...field} label="Status">
+                <Select {...field} label="Status">
                   {Object.entries(todoStatus).map(([key, value]) => (
                     <MenuItem key={key} value={Number(key)}>
                       {value}

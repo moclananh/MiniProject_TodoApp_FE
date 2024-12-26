@@ -30,7 +30,7 @@ export default function TodoPage() {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-  
+
   const handleCloseEditDialog = () => {
     setOpenEditDialog(false);
     setIsEdit(false);
@@ -51,8 +51,10 @@ export default function TodoPage() {
 
   useEffect(() => {
     TodoApi.getByUserId(id, { ...filter, pageNumber: currentPageNumber }).then((response) => {
-      const { success, message, data } = response.data;
-      if (!success) {
+      const { isSuccess, message, data } = response.data;
+      console.log(data);
+
+      if (!isSuccess) {
         toast.error(message);
         return;
       }
@@ -78,9 +80,9 @@ export default function TodoPage() {
 
   const handleOnSuccess = () => {
     TodoApi.getByUserId(id, { ...filter, pageNumber: currentPageNumber }).then((response) => {
-      const { success, message, data } = response.data;
-
-      if (!success) {
+      const { isSuccess, message, data } = response.data;
+      console.log(data);
+      if (!isSuccess) {
         toast.error(message);
         return;
       }
@@ -96,8 +98,8 @@ export default function TodoPage() {
   };
   const handleStarTodo = (todoId) => {
     TodoApi.starTodo(todoId).then((response) => {
-      const { success, message } = response.data;
-      if (!success) {
+      const { isSuccess, message } = response.data;
+      if (!isSuccess) {
         toast.error(message);
         return;
       }
@@ -113,8 +115,8 @@ export default function TodoPage() {
   const handleOnDelete = (todoId) => {
     TodoApi.deleteTodo(todoId)
       .then((response) => {
-        const { success, message } = response.data;
-        if (!success) {
+        const { isSuccess, message } = response.data;
+        if (!isSuccess) {
           toast.error(message);
           return;
         }
@@ -123,7 +125,7 @@ export default function TodoPage() {
 
         // Fetch updated data after deletion
         TodoApi.getByUserId(id, { ...filter, pageNumber: currentPageNumber }).then((fetchResponse) => {
-          const { success: fetchSuccess, message: fetchMessage, data } = fetchResponse.data;
+          const { isSuccess: fetchSuccess, message: fetchMessage, data } = fetchResponse.data;
 
           if (!fetchSuccess) {
             toast.error(fetchMessage);
@@ -140,7 +142,7 @@ export default function TodoPage() {
 
             // Fetch items for the previous page
             TodoApi.getByUserId(id, { ...filter, pageNumber: newPage }).then((prevPageResponse) => {
-              const { success: prevSuccess, message: prevMessage, data: prevData } = prevPageResponse.data;
+              const { isSuccess: prevSuccess, message: prevMessage, data: prevData } = prevPageResponse.data;
 
               if (!prevSuccess) {
                 toast.error(prevMessage);

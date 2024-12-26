@@ -1,14 +1,24 @@
 import React, { useEffect } from "react";
 import { Box, Typography, Grid, Chip, Stack, Modal, Backdrop, Fade } from "@mui/material";
-import { todoStatus } from "./forms/TodoForm";
 import { TodoApi } from "../apis/TodoApi";
+
+export const todoStatus = {
+  0: "Draft",
+  1: "Todo",
+  2: "In Progress",
+  3: "Done",
+  4: "Bug",
+};
+
 export const todoPriority = {
   0: "Low",
   1: "Medium",
   2: "High",
 };
+
 const TodoDetailsModal = ({ open, onClose, todoId }) => {
   const [todo, setTodo] = React.useState(null);
+
   useEffect(() => {
     if (todoId !== null) {
       TodoApi.getById(todoId)
@@ -21,9 +31,11 @@ const TodoDetailsModal = ({ open, onClose, todoId }) => {
         });
     }
   }, [todoId]);
+
   if (!todo) {
     return null;
   }
+
   return (
     <Modal
       open={open}
@@ -58,7 +70,7 @@ const TodoDetailsModal = ({ open, onClose, todoId }) => {
                 <Typography variant="body1" color="textSecondary">
                   Status:
                 </Typography>
-                <Chip label={todo.status} color="info" />
+                <Chip label={todoStatus[todo.status] || "Unknown"} color="info" />
               </Stack>
             </Grid>
             <Grid item xs={6}>
@@ -118,14 +130,12 @@ const TodoDetailsModal = ({ open, onClose, todoId }) => {
               </Typography>
               <Box
                 sx={{
-                  maxHeight: 250, // Limit the height of the description box
+                  maxHeight: 250,
                   overflowY: "auto",
                   paddingRight: 1,
                 }}
               >
-                <Typography variant="body2">
-                  {todo.description}
-                </Typography>
+                <Typography variant="body2">{todo.description}</Typography>
               </Box>
             </Box>
           )}
